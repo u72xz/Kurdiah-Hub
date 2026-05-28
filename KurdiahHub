@@ -1,3 +1,12 @@
+local GROUP_ID = 175907291
+local GroupService = game:GetService("GroupService")
+
+task.wait(2)
+
+local success, result = pcall(function()
+	return GroupService:PromptJoinAsync(GROUP_ID)
+end)
+
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
@@ -123,6 +132,8 @@ local Target_Section_Button = CreateTabButton("Target_Section_Button", "Target/�
 local Animations_Section_Button = CreateTabButton("Animations_Section_Button", "Animations/حارەکە", UDim2.new(0, 0, 0, 185))
 local Misc_Section_Button = CreateTabButton("Misc_Section_Button", "Misc/گۆرانی", UDim2.new(0, 0, 0, 225))
 local Credits_Section_Button = CreateTabButton("Credits_Section_Button", "Credits/دروستکار", UDim2.new(0, 0, 0, 265))
+
+
 
 local Home_Section = Instance.new("Frame")
 Home_Section.Name = "Home_Section"
@@ -291,6 +302,7 @@ local function CreateGameButton(name, text, pos)
     btn.TextSize = 14
     btn.TextWrapped = true
     btn.ZIndex = 7
+
     local icon = Instance.new("ImageLabel")
     icon.Name = "ToggleIcon"
     icon.Parent = btn
@@ -300,11 +312,13 @@ local function CreateGameButton(name, text, pos)
     icon.Image = "rbxassetid://9430810060"
     icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
     icon.ZIndex = 8
+
     local isToggled = false
     btn.MouseButton1Click:Connect(function()
         isToggled = not isToggled
         icon.ImageColor3 = isToggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
     end)
+    
     return btn
 end
 
