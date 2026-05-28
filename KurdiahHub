@@ -1,11 +1,9 @@
+
 local GROUP_ID = 175907291
 local GroupService = game:GetService("GroupService")
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local StarterGui = game:GetService("StarterGui")
 local plr = Players.LocalPlayer
 
--- Group Join logic
 task.spawn(function()
     task.wait(2)
     if not plr:IsInGroup(GROUP_ID) then
@@ -16,6 +14,15 @@ task.spawn(function()
 end)
 
 local PlayerGui = plr:WaitForChild("PlayerGui")
+
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+local plr = Players.LocalPlayer
+
+local PlayerGui = plr:WaitForChild("PlayerGui")
+
 if PlayerGui:FindFirstChild("KurdiahHub") then
     PlayerGui:FindFirstChild("KurdiahHub"):Destroy()
 end
@@ -24,8 +31,8 @@ local SysBroker = Instance.new("ScreenGui")
 SysBroker.Name = "KurdiahHub"
 SysBroker.Parent = PlayerGui
 SysBroker.ResetOnSpawn = false
+SysBroker.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- OpenCloseButton
 local OpenCloseButton = Instance.new("ImageButton")
 OpenCloseButton.Name = "OpenCloseButton"
 OpenCloseButton.Parent = SysBroker
@@ -36,24 +43,270 @@ OpenCloseButton.Position = UDim2.new(0.05, 0, 0.4, 0)
 OpenCloseButton.Size = UDim2.new(0, 40, 0, 35)
 OpenCloseButton.ZIndex = 10
 OpenCloseButton.Image = "rbxassetid://9430810060"
-Instance.new("UICorner", OpenCloseButton).CornerRadius = UDim.new(0, 16)
 
--- Background
+local ButtonCorner = Instance.new("UICorner", OpenCloseButton)
+ButtonCorner.CornerRadius = UDim.new(0, 16)
+
 local Background = Instance.new("ImageLabel")
 Background.Name = "Background"
 Background.Parent = SysBroker
 Background.AnchorPoint = Vector2.new(0.5, 0.5)
 Background.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Background.BorderColor3 = Color3.fromRGB(255, 170, 0)
 Background.Position = UDim2.new(0.5, 0, 0.5, 0)
 Background.Size = UDim2.new(0, 500, 0, 350)
+Background.ZIndex = 5
+Background.Image = "rbxassetid://159991693"
+Background.ImageColor3 = Color3.fromRGB(0, 255, 255)
+Background.ImageTransparency = 0.85
+Background.ScaleType = Enum.ScaleType.Tile
+Background.TileSize = UDim2.new(0, 30, 0, 30)
+Background.Active = true
 Background.Visible = true
 
-local isLocked = false
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = Background
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(245, 204, 39)
 
--- Dragging Logic for Background
-local bgDragToggle, bgDragStart, bgStartPos
+local TitleBarLabel = Instance.new("TextLabel")
+TitleBarLabel.Name = "TitleBarLabel"
+TitleBarLabel.Parent = Background
+TitleBarLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TitleBarLabel.BackgroundTransparency = 0.25
+TitleBarLabel.BorderSizePixel = 0
+TitleBarLabel.Size = UDim2.new(1, 0, 0, 30)
+TitleBarLabel.Font = Enum.Font.Oswald
+TitleBarLabel.Text = "Kurdiah Hub: The best Kurdish Scrip"
+TitleBarLabel.TextColor3 = Color3.fromRGB(245, 204, 39)
+TitleBarLabel.TextScaled = true
+TitleBarLabel.ZIndex = 6
+
+-- CrownImage
+local CrownImage = Instance.new("ImageLabel")
+CrownImage.Name = "CrownImage"
+CrownImage.Parent = TitleBarLabel
+CrownImage.BackgroundTransparency = 1
+CrownImage.Size = UDim2.new(0, 70, 0, 70) 
+CrownImage.Position = UDim2.new(0, -35, 0, -50) 
+CrownImage.Image = "rbxassetid://11322089611"
+CrownImage.ImageColor3 = Color3.fromRGB(245, 204, 39)
+CrownImage.ZIndex = 7
+CrownImage.Rotation = 330
+
+-- Lock Button Logic
+local LockButton = Instance.new("ImageButton", Background)
+LockButton.Name = "LockButton"
+LockButton.BackgroundTransparency = 1
+LockButton.Position = UDim2.new(1, -25, 0, 3)
+LockButton.Size = UDim2.new(0, 24, 0, 24)
+LockButton.ZIndex = 25
+LockButton.Image = "rbxassetid://15117261700"
+
+LockButton.MouseButton1Click:Connect(function()
+    isLocked = not isLocked
+    LockButton.Image = isLocked and "rbxassetid://18745061057" or "rbxassetid://15117261700"
+end)
+
+local SectionList = Instance.new("Frame")
+SectionList.Name = "SectionList"
+SectionList.Parent = Background
+SectionList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SectionList.BackgroundTransparency = 0.5
+SectionList.BorderSizePixel = 0
+SectionList.Position = UDim2.new(0, 0, 0, 30)
+SectionList.Size = UDim2.new(0, 105, 0, 320)
+SectionList.ZIndex = 6
+
+local function CreateTabButton(name, text, pos)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Parent = SectionList
+    btn.BackgroundColor3 = Color3.fromRGB(245, 204, 39)
+    btn.BackgroundTransparency = 0.5
+    btn.BorderSizePixel = 0
+    btn.Position = pos
+    btn.Size = UDim2.new(0, 105, 0, 30)
+    btn.Font = Enum.Font.Oswald
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    btn.TextScaled = true
+    btn.ZIndex = 7
+    return btn
+end
+
+local Home_Section_Button = CreateTabButton("Home_Section_Button", "home/سەرەکی", UDim2.new(0, 0, 0, 25))
+Home_Section_Button.BackgroundTransparency = 0.2
+local Game_Section_Button = CreateTabButton("Game_Section_Button", "Game/یاری", UDim2.new(0, 0, 0, 65))
+local Character_Section_Button = CreateTabButton("Character_Section_Button", "Character/کەراکتەر", UDim2.new(0, 0, 0, 105))
+local Target_Section_Button = CreateTabButton("Target_Section_Button", "Target/دەست نیشان کراو", UDim2.new(0, 0, 0, 145))
+local Animations_Section_Button = CreateTabButton("Animations_Section_Button", "Animations/حارەکە", UDim2.new(0, 0, 0, 185))
+local Misc_Section_Button = CreateTabButton("Misc_Section_Button", "Misc/گۆرانی", UDim2.new(0, 0, 0, 225))
+local Credits_Section_Button = CreateTabButton("Credits_Section_Button", "Credits/دروستکار", UDim2.new(0, 0, 0, 265))
+
+
+
+local Home_Section = Instance.new("Frame")
+Home_Section.Name = "Home_Section"
+Home_Section.Parent = Background
+Home_Section.Position = UDim2.new(0, 110, 0, 35)
+Home_Section.Size = UDim2.new(0, 385, 0, 310)
+Home_Section.BackgroundTransparency = 1
+Home_Section.Visible = true
+Home_Section.ZIndex = 6
+
+local PlayerAvatar = Instance.new("ImageLabel")
+PlayerAvatar.Parent = Home_Section
+PlayerAvatar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PlayerAvatar.BorderColor3 = Color3.fromRGB(255, 170, 0)
+PlayerAvatar.BorderSizePixel = 2
+PlayerAvatar.Position = UDim2.new(0, 5, 0, 5)
+PlayerAvatar.Size = UDim2.new(0, 90, 0, 90)
+PlayerAvatar.ZIndex = 7
+Instance.new("UICorner", PlayerAvatar).CornerRadius = UDim.new(0, 15)
+
+local AvatarStroke = Instance.new("UIStroke")
+AvatarStroke.Parent = PlayerAvatar
+AvatarStroke.Thickness = 2
+AvatarStroke.Color = Color3.fromRGB(245, 204, 39)
+AvatarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local success, content = pcall(function() return Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150) end)
+PlayerAvatar.Image = success and content or "rbxthumb://type=AvatarHeadShot&id=" .. plr.UserId .. "&x=150&y=150"
+
+local UsernameLabel = Instance.new("TextLabel")
+UsernameLabel.Parent = Home_Section
+UsernameLabel.BackgroundTransparency = 1
+UsernameLabel.Position = UDim2.new(0, 110, 0, 8) 
+UsernameLabel.Size = UDim2.new(0, 265, 0, 25)
+UsernameLabel.Font = Enum.Font.SourceSansBold
+UsernameLabel.Text = "@" .. plr.Name
+UsernameLabel.TextColor3 = Color3.fromRGB(245, 204, 39)
+UsernameLabel.TextSize = 22
+UsernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+UsernameLabel.ZIndex = 7
+
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Parent = Home_Section
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.Position = UDim2.new(0, 110, 0, 35)
+InfoLabel.Size = UDim2.new(0, 265, 0, 65)
+InfoLabel.Font = Enum.Font.SourceSansBold
+InfoLabel.Text = "بۆ شاردنەوە و پیشاندانەوەی مینیو\nکۆنترۆڵ کلیک لەسەر [B] بکە\nئەم سکریپتە بێبەرامبەرە (Free)"
+InfoLabel.TextColor3 = Color3.fromRGB(245, 204, 39)
+InfoLabel.TextSize = 16
+InfoLabel.TextWrapped = true
+InfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+InfoLabel.ZIndex = 7
+
+local DevBox = Instance.new("Frame")
+DevBox.Parent = Home_Section
+DevBox.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+DevBox.BorderSizePixel = 0
+DevBox.Position = UDim2.new(0, 5, 0, 125)
+DevBox.Size = UDim2.new(0, 375, 0, 140)
+DevBox.ZIndex = 7
+Instance.new("UICorner", DevBox).CornerRadius = UDim.new(0, 16)
+
+local DevBoxStroke = Instance.new("UIStroke")
+DevBoxStroke.Parent = DevBox
+DevBoxStroke.Thickness = 2
+DevBoxStroke.Color = Color3.fromRGB(245, 204, 39)
+DevBoxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local TryhardRightsLabel = Instance.new("TextLabel")
+TryhardRightsLabel.Parent = DevBox
+TryhardRightsLabel.BackgroundTransparency = 1
+TryhardRightsLabel.Position = UDim2.new(0, 15, 0, 15)
+TryhardRightsLabel.Size = UDim2.new(1, -30, 1, -30)
+TryhardRightsLabel.Font = Enum.Font.SourceSansBold
+TryhardRightsLabel.Text = "ئەم سکریپتە بێبەرامبەرە بۆ هەمووان\n\nو مافی بڵاوکردنەوەی پارێزراوە لە لایەن Tryhardـەوە"
+TryhardRightsLabel.TextColor3 = Color3.fromRGB(245, 204, 39)
+TryhardRightsLabel.TextSize = 18
+TryhardRightsLabel.TextWrapped = true
+TryhardRightsLabel.ZIndex = 8
+
+local function CreateScrollingSection(name)
+    local scr = Instance.new("ScrollingFrame")
+    scr.Name = name
+    scr.Parent = Background
+    scr.Position = UDim2.new(0, 110, 0, 35)
+    scr.Size = UDim2.new(0, 385, 0, 310)
+    scr.BackgroundTransparency = 1
+    scr.Visible = false
+    scr.ZIndex = 6
+    return scr
+end
+
+local Game_Section = CreateScrollingSection("Game_Section")
+local Character_Section = CreateScrollingSection("Character_Section")
+local Target_Section = CreateScrollingSection("Target_Section")
+local Animations_Section = CreateScrollingSection("Animations_Section")
+local Misc_Section = CreateScrollingSection("Misc_Section")
+local Credits_Section = CreateScrollingSection("Credits_Section")
+
+local function ChangeSection(SectionClicked)
+    local SectionClickedName = string.split(SectionClicked.Name, "_")[1]
+    for i, v in pairs(SectionList:GetChildren()) do
+        if v:IsA("TextButton") then
+            v.BackgroundTransparency = (v.Name ~= SectionClicked.Name) and 0.5 or 0.2
+        end
+    end
+    for i, v in pairs(Background:GetChildren()) do
+        if v:IsA("ScrollingFrame") or v.Name == "Home_Section" then
+            local SectionForName = string.split(v.Name, "_")[1]
+            v.Visible = string.find(SectionClickedName, SectionForName) ~= nil
+        end
+    end
+end
+
+Home_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Home_Section_Button) end)
+Game_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Game_Section_Button) end)
+Character_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Character_Section_Button) end)
+Target_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Target_Section_Button) end)
+Animations_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Animations_Section_Button) end)
+Misc_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Misc_Section_Button) end)
+Credits_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Credits_Section_Button) end)
+
+--jualandne backgrobackground u OpenCloseButton
+
+local dragStartBtn
+local startPosBtn
+
+OpenCloseButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDragging = false
+        dragStartBtn = input.Position
+        startPosBtn = OpenCloseButton.Position
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        if dragStartBtn then
+            local delta = input.Position - dragStartBtn
+            if delta.Magnitude > 5 then
+                isDragging = true
+                OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
+            end
+        end
+    end
+end)
+
+OpenCloseButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if not isDragging then
+            Background.Visible = not Background.Visible
+        end
+        dragStartBtn = nil
+    end
+end)
+
+local bgDragToggle = false
+local bgDragStart
+local bgStartPos
+
 Background.InputBegan:Connect(function(input)
-    if isLocked then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         bgDragToggle = true
         bgDragStart = input.Position
@@ -74,52 +327,68 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Dragging & Click Logic for OpenCloseButton
-local isDragging = false
-local dragStartBtn, startPosBtn
-OpenCloseButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        isDragging = false
-        dragStartBtn = input.Position
-        startPosBtn = OpenCloseButton.Position
-    end
-end)
+local function CreateGameButton(name, text, pos)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Parent = Game_Section
+    btn.BackgroundColor3 = Color3.fromRGB(245, 204, 39)
+    btn.BackgroundTransparency = 0.5
+    btn.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    btn.BorderSizePixel = 0
+    btn.Position = pos
+    btn.Size = UDim2.new(0, 150, 0, 30)
+    btn.Font = Enum.Font.Oswald
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    btn.TextScaled = true
+    btn.TextSize = 14
+    btn.TextWrapped = true
+    btn.ZIndex = 7
 
-UserInputService.InputChanged:Connect(function(input)
-    if dragStartBtn then
-        local delta = input.Position - dragStartBtn
-        if delta.Magnitude > 5 then
-            isDragging = true
-            OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
-        end
-    end
-end)
+    local icon = Instance.new("ImageLabel")
+    icon.Name = "ToggleIcon"
+    icon.Parent = btn
+    icon.BackgroundTransparency = 1
+    icon.Position = UDim2.new(1, 5, 0, 2)
+    icon.Size = UDim2.new(0, 25, 0, 25)
+    icon.Image = "rbxassetid://9430810060"
+    icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
+    icon.ZIndex = 8
 
-OpenCloseButton.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        if not isDragging then
-            Background.Visible = not Background.Visible
-        end
-        dragStartBtn = nil
-    end
-end)
+    local isToggled = false
+    btn.MouseButton1Click:Connect(function()
+        isToggled = not isToggled
+        icon.ImageColor3 = isToggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    end)
+    
+    return btn
+end
 
--- Lock Button Logic
-local LockButton = Instance.new("ImageButton", Background)
-LockButton.Size = UDim2.new(0, 24, 0, 24)
-LockButton.Position = UDim2.new(1, -25, 0, 3)
-LockButton.Image = "rbxassetid://15117261700"
-LockButton.MouseButton1Click:Connect(function()
-    isLocked = not isLocked
-    LockButton.Image = isLocked and "rbxassetid://18745061057" or "rbxassetid://15117261700"
-end)
+Game_Section.CanvasSize = UDim2.new(0, 0, 2, 0) 
 
--- Notification
-pcall(function()
-    StarterGui:SetCore("SendNotification", {
-        Title = "Kurdiah Hub";
-        Text = "Gui developed by MalwareHub - Discord in your clipboard";
-        Duration = 10;
-    })
-end)
+CreateGameButton("AntiRagdoll_Btn", "Anti ragdoll", UDim2.new(0, 10, 0, 10))
+CreateGameButton("PushAura_Btn", "Push aura", UDim2.new(0, 200, 0, 10))
+CreateGameButton("SpamMines_Btn", "Spam mines", UDim2.new(0, 10, 0, 50))
+CreateGameButton("PotionFling_Btn", "Potion Fling", UDim2.new(0, 200, 0, 50))
+CreateGameButton("TouchFling_Btn", "Touch fling", UDim2.new(0, 10, 0, 90))
+CreateGameButton("PotionDick_Btn", "Potion dick", UDim2.new(0, 200, 0, 90))
+CreateGameButton("VoidProt_Btn", "Void protection", UDim2.new(0, 10, 0, 130))
+CreateGameButton("ModdedPush_Btn", "Modded push", UDim2.new(0, 200, 0, 130))
+CreateGameButton("BreakCannons_Btn", "Break Cannons", UDim2.new(0, 10, 0, 170))
+CreateGameButton("PushAll_Btn", "Push all", UDim2.new(0, 200, 0, 170))
+CreateGameButton("LethalCannons_Btn", "Lethal Cannons", UDim2.new(0, 10, 0, 210))
+CreateGameButton("ChatAlert_Btn", "Chat alert", UDim2.new(0, 200, 0, 210))
+
+
+
+-- notfy kannaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaan
+
+local StarterGui = game:GetService("StarterGui")
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Kurdiah Hub";
+    Text = "Gui developed by  - Discord in your clipboard";
+    Duration = 10;
+})
+
 setclipboard("https://discord.gg/RkhpySwNR9")
