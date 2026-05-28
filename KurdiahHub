@@ -268,11 +268,33 @@ Animations_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Ani
 Misc_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Misc_Section_Button) end)
 Credits_Section_Button.MouseButton1Click:Connect(function() ChangeSection(Credits_Section_Button) end)
 
---jualandne backgrobackground u OpenCloseButton
+-- Dragging Logic for Background
+local bgDragToggle, bgDragStart, bgStartPos
+Background.InputBegan:Connect(function(input)
+    if isLocked then return end -- ئەگەر قوفڵ بوو جوڵە ناکات
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        bgDragToggle = true
+        bgDragStart = input.Position
+        bgStartPos = Background.Position
+    end
+end)
 
-local dragStartBtn
-local startPosBtn
+UserInputService.InputChanged:Connect(function(input)
+    if bgDragToggle and not isLocked and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - bgDragStart
+        Background.Position = UDim2.new(bgStartPos.X.Scale, bgStartPos.X.Offset + delta.X, bgStartPos.Y.Scale, bgStartPos.Y.Offset + delta.Y)
+    end
+end)
 
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        bgDragToggle = false
+    end
+end)
+
+-- Dragging & Click Logic for OpenCloseButton
+local isDragging = false
+local dragStartBtn, startPosBtn
 OpenCloseButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         isDragging = false
@@ -282,13 +304,11 @@ OpenCloseButton.InputBegan:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        if dragStartBtn then
-            local delta = input.Position - dragStartBtn
-            if delta.Magnitude > 5 then
-                isDragging = true
-                OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
-            end
+    if dragStartBtn and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStartBtn
+        if delta.Magnitude > 5 then
+            isDragging = true
+            OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
         end
     end
 end)
@@ -299,31 +319,6 @@ OpenCloseButton.InputEnded:Connect(function(input)
             Background.Visible = not Background.Visible
         end
         dragStartBtn = nil
-    end
-end)
-
-local bgDragToggle = false
-local bgDragStart
-local bgStartPos
-
-Background.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        bgDragToggle = true
-        bgDragStart = input.Position
-        bgStartPos = Background.Position
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if bgDragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - bgDragStart
-        Background.Position = UDim2.new(bgStartPos.X.Scale, bgStartPos.X.Offset + delta.X, bgStartPos.Y.Scale, bgStartPos.Y.Offset + delta.Y)
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        bgDragToggle = false
     end
 end)
 
