@@ -271,9 +271,12 @@ LockButton.MouseButton1Click:Connect(function()
     LockButton.Image = isLocked and "rbxassetid://18745061057" or "rbxassetid://15117261700"
 end)
 
+-- ئەم بەشە لە جیاتی هەموو کۆدی پێشووی جوڵاندن و کلیککردنی OpenCloseButton دابنێ
 local isDragging = false
-local dragThreshold = 5 -- ڕێژەی بجوڵێت بۆ ئەوەی بزانین Dragـە یان Click
+local dragStartBtn
+local startPosBtn
 
+-- 1. دەستپێکی جوڵە
 OpenCloseButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         isDragging = false
@@ -282,22 +285,25 @@ OpenCloseButton.InputBegan:Connect(function(input)
     end
 end)
 
+-- 2. کاتی جوڵاندن (Drag)
 UserInputService.InputChanged:Connect(function(input)
     if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         if dragStartBtn then
             local delta = input.Position - dragStartBtn
-            if delta.Magnitude > dragThreshold then
-                isDragging = true -- ئێستا دەزانین جوڵەیە (Drag)
+            -- ئەگەر جوڵەکە لە 5 پیکسڵ زیاتر بوو، ئیتر بە Drag هەژمار دەکرێت
+            if delta.Magnitude > 5 then
+                isDragging = true
                 OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
             end
         end
     end
 end)
 
+-- 3. کاتی کۆتاییهاتنی کلیک
 OpenCloseButton.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        -- ئەگەر جوڵە نەبووبێت، کەواتە ئەمە تەنها کلیک بووە!
         if not isDragging then
-            -- ئەگەر جوڵە نەبوو، واتە کلیک بووە
             Background.Visible = not Background.Visible
         end
         dragStartBtn = nil
