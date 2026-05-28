@@ -271,38 +271,36 @@ LockButton.MouseButton1Click:Connect(function()
     LockButton.Image = isLocked and "rbxassetid://18745061057" or "rbxassetid://15117261700"
 end)
 
-local bgDragToggle, bgDragStart, bgStartPos
-Background.InputBegan:Connect(function(input)
-    if isLocked then return end
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        bgDragToggle = true
-        bgDragStart = input.Position
-        bgStartPos = Background.Position
-        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then bgDragToggle = false end end)
-    end
-end)
+local isDragging = false
+local dragThreshold = 5 -- ڕێژەی بجوڵێت بۆ ئەوەی بزانین Dragـە یان Click
 
-UserInputService.InputChanged:Connect(function(input)
-    if bgDragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - bgDragStart
-        Background.Position = UDim2.new(bgStartPos.X.Scale, bgStartPos.X.Offset + delta.X, bgStartPos.Y.Scale, bgStartPos.Y.Offset + delta.Y)
-    end
-end)
-
-local btnDragToggle, btnDragStart, btnStartPos
 OpenCloseButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        btnDragToggle = true
-        btnDragStart = input.Position
-        btnStartPos = OpenCloseButton.Position
-        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then btnDragToggle = false end end)
+        isDragging = false
+        dragStartBtn = input.Position
+        startPosBtn = OpenCloseButton.Position
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if btnDragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - btnDragStart
-        OpenCloseButton.Position = UDim2.new(btnStartPos.X.Scale, btnStartPos.X.Offset + delta.X, btnStartPos.Y.Scale, btnStartPos.Y.Offset + delta.Y)
+    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        if dragStartBtn then
+            local delta = input.Position - dragStartBtn
+            if delta.Magnitude > dragThreshold then
+                isDragging = true -- ئێستا دەزانین جوڵەیە (Drag)
+                OpenCloseButton.Position = UDim2.new(startPosBtn.X.Scale, startPosBtn.X.Offset + delta.X, startPosBtn.Y.Scale, startPosBtn.Y.Offset + delta.Y)
+            end
+        end
+    end
+end)
+
+OpenCloseButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if not isDragging then
+            -- ئەگەر جوڵە نەبوو، واتە کلیک بووە
+            Background.Visible = not Background.Visible
+        end
+        dragStartBtn = nil
     end
 end)
 
