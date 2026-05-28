@@ -289,9 +289,22 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
-OpenCloseButton.MouseButton1Click:Connect(function() Background.Visible = not Background.Visible end)
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.B then Background.Visible = not Background.Visible end
+local dragToggle, dragInput, dragStart, startPos
+
+OpenCloseButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = OpenCloseButton.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        OpenCloseButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 end)
 
 local function CreateGameButton(name, text, pos)
@@ -354,7 +367,7 @@ local StarterGui = game:GetService("StarterGui")
 
 StarterGui:SetCore("SendNotification", {
     Title = "Kurdiah Hub";
-    Text = "Gui developed by Farmanda - Discord in your clipboard";
+    Text = "Gui developed by  - Discord in your clipboard";
     Duration = 10;
 })
 
