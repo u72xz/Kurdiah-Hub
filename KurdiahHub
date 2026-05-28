@@ -1,12 +1,3 @@
-local GROUP_ID = 175907291
-local GroupService = game:GetService("GroupService")
-
-task.wait(2)
-
-local success, result = pcall(function()
-	return GroupService:PromptJoinAsync(GROUP_ID)
-end)
-
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
@@ -336,3 +327,12 @@ CreateGameButton("BreakCannons_Btn", "Break Cannons", UDim2.new(0, 10, 0, 170))
 CreateGameButton("PushAll_Btn", "Push all", UDim2.new(0, 200, 0, 170))
 CreateGameButton("LethalCannons_Btn", "Lethal Cannons", UDim2.new(0, 10, 0, 210))
 CreateGameButton("ChatAlert_Btn", "Chat alert", UDim2.new(0, 200, 0, 210))
+
+ocal GROUP_ID = 175907291
+local GroupService = game:GetService("GroupService")
+
+task.wait(2)
+
+local success, result = pcall(function()
+	return GroupService:PromptJoinAsync(GROUP_ID)
+end)
