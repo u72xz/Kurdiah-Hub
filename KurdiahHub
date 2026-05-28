@@ -33,7 +33,7 @@ OpenCloseButton.ZIndex = 10
 OpenCloseButton.Image = "rbxassetid://9430810060"
 
 local ButtonCorner = Instance.new("UICorner", OpenCloseButton)
-ButtonCorner.CornerRadius = UDim.new(0, 16)
+ButtonCorner.CornerRadius = UDim.new(0, 18)
 
 local Background = Instance.new("ImageLabel")
 Background.Name = "Background"
