@@ -334,7 +334,7 @@ CreateGameButton("ChatAlert_Btn", "Chat alert", UDim2.new(0, 200, 0, 210))
 
 StarterGui:SetCore("SendNotification", {
     Title = "Kurdiah Hub";
-    Text = "Gui developed by - Discord in your clipboard";
+    Text = "Gui developed by farmanda - Discord in your clipboard";
     Duration = 10;
 })
 setclipboard("https://discord.gg/3FsNcjXZy2")
